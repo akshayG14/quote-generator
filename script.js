@@ -7,14 +7,12 @@ const twitterBttn = document.getElementById("twitter-button");
 const newQuoteBttn = document.getElementById("new-quote-button");
 const loader = document.getElementById("loader");
 
-// display loader
-function loading() {
+function showLoadingSpinner() {
   loader.hidden = false;
   quoteContainer.hidden = true;
 }
 
-// hide loading
-function loadingComplete() {
+function removeLoadingSpinner() {
   if (!loader.hidden) {
     quoteContainer.hidden = false;
     loader.hidden = true;
@@ -23,14 +21,13 @@ function loadingComplete() {
 
 // Get the quote from API
 async function getQuote() {
-  loading();
+  showLoadingSpinner();
   const proxyUrl = "https://frozen-lake-72991.herokuapp.com/";
   const apiUrl = "http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en";
 
   try {
     const response = await fetch(proxyUrl + apiUrl);
     const data = await response.json();
-    // console.log(data);
 
     // workaround for empty author data
     authorText.innerText = data.quoteAuthor === "" ? "Unknown" : data.quoteAuthor;
@@ -38,11 +35,9 @@ async function getQuote() {
     data.quoteText.length > 120 ? quoteText.classList.add("long-quote") : quoteText.classList.remove("long-quote");
     quoteText.innerText = data.quoteText;
 
-    // display quote and hide loader
-    loadingComplete();
+    removeLoadingSpinner();
   } catch (error) {
     getQuote();
-    // console.log("Sorry but no quote", error);
   }
 }
 
